@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Survey</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            background: #fff;
+        }
+        h2 {
+            text-align: center;
+            color: #444;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .candidate-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .candidate-option img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .candidate-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f4f4f9;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #responseMessage {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Presidential Election Survey 2024</h2>
+    
+    <form id="surveyForm">
+        <div class="form-group">
+            <label>Select Candidate:</label>
+            <div class="candidate-option">
+                <input type="radio" id="candidate1" name="candidate" value="Candidate 1" required>
+                <img src="candidate1.jpg" alt="Candidate 1">
+                <label for="candidate1">Anura Kumara Dissanayake</label>
+            </div>
+            <div class="candidate-option">
+                <input type="radio" id="candidate2" name="candidate" value="Candidate 2" required>
+                <img src="candidate2.jpg" alt="Candidate 2">
+                <label for="candidate2">Lakshman Namal Rajapakshe</label>
+            </div>
+            <div class="candidate-option">
+                <input type="radio" id="candidate3" name="candidate" value="Candidate 3" required>
+                <img src="candidate3.jpg" alt="Candidate 3">
+                <label for="candidate3">Ranil Wickramasinghe</label>
+            </div>
+
+            <div class="candidate-option">
+                <input type="radio" id="candidate3" name="candidate" value="Candidate 4" required>
+                <img src="candidate4.jpg" alt="Candidate 4">
+                <label for="candidate4">Sajith Premadasa</label>
+            </div>
+            <!-- Add more candidates as needed -->
+        </div>
+        
+        <div class="form-group">
+            <label for="district">Select Your District:</label>
+            <select id="district" name="district" required>
+                <option value="Colombo"> Colombo</option>
+                <option value="Gampaha"> Gampaha</option>
+                <option value=" Kalutara">Kalutara</option>
+                <option value=" Kandy">Kandy</option>
+                <option value=" Matale">Matale</option>
+                <option value=" Nuwara Eliya">Nuwara Eliya</option>
+                <option value=" Galle">Galle</option>
+                <option value=" Matara">Matara</option>
+                <option value=" Hambantota">Hambantota</option>
+                <option value=" Jaffna">Jaffna</option>
+                <option value=" Kilinochchi">Kilinochchi</option>
+                <option value=" Mannar">Mannar</option>
+                <option value=" Vavuniya">Vavuniya</option>
+                <option value=" Mullaitivu">Mullaitivu</option>
+                <option value=" Batticaloa">Batticaloa</option>
+                <option value=" Ampara">Ampara</option>
+                <option value=" Trincomalee">Trincomalee</option>
+                <option value=" Kurunegala">Kurunegala</option>
+                <option value=" Puttalam">Puttalam</option>
+                <option value=" Anuradhapura">Anuradhapura</option>
+                <option value=" Polonnaruwa">Polonnaruwa</option>
+                <option value=" Badulla">Badulla</option>
+                <option value=" Moneragala">Moneragala</option>
+                <option value=" Ratnapura">Ratnapura</option>
+                <option value=" Kegalle">Kegalle</option>
+                  <!-- Add more districts as needed -->
+            </select>
+        </div>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="responseMessage"></div>
+
+    <script>
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var candidate = document.querySelector('input[name="candidate"]:checked').value;
+            var district = document.getElementById('district').value;
+            var uniqueId = localStorage.getItem('surveyUniqueId');
+
+            if (!uniqueId) {
+                // Generate a simple unique ID and store it in localStorage
+                uniqueId = 'id_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('surveyUniqueId', uniqueId);
+            }
+
+            // Send data to Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycby7ts-au2jDkj9_duS-J05pk9u4A9_0RIsHOFnB1h-napnUz9QmnVzZJJVmGmFADAvu/exec', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    'candidate': candidate,
+                    'district': district,
+                    'uniqueId': uniqueId
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('responseMessage').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('responseMessage').innerText = 'An error occurred: ' + error;
+            });
+        });
+    </script>
+
+</body>
+</html>
